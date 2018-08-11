@@ -2,6 +2,8 @@
 
 MSF.gg site extensions for Google Chrome
 
+You can download it here: [USE IN CHROME](https://chrome.google.com/webstore/detail/gfdoeoolghblammkopcnfdheakpemfcd/publish-accepted?authuser=0&hl=pt-BR)
+
 ## Features
 
 - Raid strike definition after assign lanes

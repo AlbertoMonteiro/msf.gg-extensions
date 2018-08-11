@@ -1,6 +1,11 @@
 # msfgg extensions
 
-MSF.gg site extensions
+MSF.gg site extensions for Google Chrome
+
+## Features
+
+- Raid strike definition after assign lanes
+- (IN FUTURE) Speed turn comparer(this will show after build 2 squads, who is going to attack first, usefull for raid and blitz)
 
 ## Installation
 
@@ -54,23 +59,3 @@ or
 or
 
     $ gulp release    // => X.0.0
-
-
-## Globals
-
-The build tool also defines a variable named `process.env.NODE_ENV` in your scripts. It will be set to `development` unless you use the `--production` option.
-
-
-**Example:** `./app/background.js`
-
-```javascript
-if(process.env.NODE_ENV === 'development'){
-  console.log('We are in development mode!');
-}
-```
-
-
-
-
-
-

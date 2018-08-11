@@ -1,6 +1,9 @@
 import gulp from 'gulp'
 import gulpif from 'gulp-if'
-import { log, colors } from 'gulp-util'
+import {
+  log,
+  colors
+} from 'gulp-util'
 import named from 'vinyl-named'
 import webpack from 'webpack'
 import gulpWebpack from 'webpack-stream'
@@ -14,37 +17,43 @@ gulp.task('scripts', (cb) => {
   return gulp.src('app/scripts/*.js')
     .pipe(plumber({
       // Webpack will log the errors
-      errorHandler () {}
+      errorHandler() {}
     }))
     .pipe(named())
     .pipe(gulpWebpack({
-      devtool: args.sourcemaps ? 'inline-source-map' : false,
-      watch: args.watch,
-      plugins: [
-        new webpack.DefinePlugin({
-          'process.env.NODE_ENV': JSON.stringify(ENV),
-          'process.env.VENDOR': JSON.stringify(args.vendor)
-        })
-      ].concat(args.production ? [
-        new webpack.optimize.UglifyJsPlugin()
-      ] : []),
-      module: {
-        rules: [{
-          test: /\.js$/,
-          loader: 'babel-loader'
-        }]
-      }
-    },
-    webpack,
-    (err, stats) => {
-      if (err) return
-      log(`Finished '${colors.cyan('scripts')}'`, stats.toString({
-        chunks: false,
-        colors: true,
-        cached: false,
-        children: false
+        devtool: args.sourcemaps ? 'inline-source-map' : false,
+        watch: args.watch,
+        plugins: [
+          new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(ENV),
+            'process.env.VENDOR': JSON.stringify(args.vendor)
+          })
+        ].concat(args.production ? [
+          new webpack.optimize.UglifyJsPlugin()
+        ] : []),
+        module: {
+          rules: [{
+            test: /\.html$/,
+            exclude: /node_modules/,
+            use: {
+              loader: 'html-loader'
+            }
+          }, {
+            test: /\.js$/,
+            loader: 'babel-loader'
+          }]
+        }
+      },
+      webpack,
+      (err, stats) => {
+        if (err) return
+        log(`Finished '${colors.cyan('scripts')}'`, stats.toString({
+          chunks: false,
+          colors: true,
+          cached: false,
+          children: false
+        }))
       }))
-    }))
     .pipe(gulp.dest(`dist/${args.vendor}/scripts`))
     .pipe(gulpif(args.watch, livereload()))
 })

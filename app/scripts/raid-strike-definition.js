@@ -10,27 +10,40 @@ export function doRaidStrikeDefinition() {
     var selectedColors = [];
     var currentColorAdded = false;
 
-    $(".raid-info.primary.content button").click(() => {
-        currentRaidColorIndex = 0;
-        selectedColors = [];
-        currentColorAdded = false;
+    $(".menu-list input[type=radio][name=event-select]").change(() => {
+        $(".raid-strikes").closest(".column").remove();
     });
 
     $("body").click(element => {
-        if (!$(element.target).is(".snackbar button.is-dark"))
-            return;
+        const currentElement = $(element.target);
+        if (currentElement.is(".snackbar button.is-dark"))
+            goToNextColor();
+        if (currentElement.is(".raid-info.primary.content button"))
+            restartRaidDefinition();
+        if (currentElement.parents("div.raid-wrapper div.node").length > 0)
+            registerColorPath();
+    })
+
+    function registerColorPath() {
+        if (currentColorAdded) return;
+        selectedColors.push(raidColores[currentRaidColorIndex]);
+        currentColorAdded = true;
+    }
+
+    function goToNextColor() {
         currentRaidColorIndex++;
         currentColorAdded = false;
         if (currentRaidColorIndex == 8) {
             showRaidListTable(selectedColors);
         }
-    })
+    }
 
-    $("div.raid-wrapper div.node").click(() => {
-        if (currentColorAdded) return;
-        selectedColors.push(raidColores[currentRaidColorIndex]);
-        currentColorAdded = true;
-    });
+    function restartRaidDefinition() {
+        currentRaidColorIndex = 0;
+        selectedColors = [];
+        currentColorAdded = false;
+        $(".raid-strikes").closest(".column").remove();
+    }
 }
 
 function showRaidListTable(selectedColors) {
@@ -39,6 +52,6 @@ function showRaidListTable(selectedColors) {
     });
     console.log(finalHtml);
     var newElement = $(finalHtml);
-    debugger;
+
     $(".raids.container .columns.is-desktop").append(newElement);
 }

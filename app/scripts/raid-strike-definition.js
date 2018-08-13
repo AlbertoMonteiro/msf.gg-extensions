@@ -5,7 +5,7 @@ import $ from "jquery";
 const template = Handlebars.compile(html);
 
 export function doRaidStrikeDefinition() {
-    const raidColores = ["red", "yellow", "blue", "white", "green", "purple", "orange", "teal"];
+    const raidColores = ["rgb(255, 65, 65)", "yellow", "#5757ff", "white", "green", "#b55ab5", "orange", "teal"];
     var currentRaidColorIndex = 0;
     var selectedColors = [];
     var currentColorAdded = false;
@@ -18,11 +18,28 @@ export function doRaidStrikeDefinition() {
         const currentElement = $(element.target);
         if (currentElement.is(".snackbar button.is-dark"))
             goToNextColor();
+        if (currentElement.is(".raid-strike-save"))
+            saveRaidStrike();
         if (currentElement.is(".raid-info.primary.content button"))
             restartRaidDefinition();
         if (currentElement.parents("div.raid-wrapper div.node").length > 0)
             registerColorPath();
-    })
+    });
+
+    function saveRaidStrike() {
+        const strikes = [
+            [],
+            [],
+            []
+        ];
+        $(".raid-strikes tbody td").each((index, element) => {
+            strikes[index % 3].push($(element).text());
+        });
+
+        var raid = $(".menu-list input[type=radio][name=event-select]:checked").closest("label").text();
+
+        window.localStorage.setItem(`${raid}_raid-strike`.trim(), JSON.stringify(strikes));
+    }
 
     function registerColorPath() {
         if (currentColorAdded) return;
@@ -50,7 +67,6 @@ function showRaidListTable(selectedColors) {
     var finalHtml = template({
         colors: selectedColors
     });
-    console.log(finalHtml);
     var newElement = $(finalHtml);
 
     $(".raids.container .columns.is-desktop").append(newElement);

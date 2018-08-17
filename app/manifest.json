@@ -2,7 +2,7 @@
   "name": "MSF.gg extensions",
   "short_name": "msfggextensions",
   "description": "This is an collection of MSF.gg extensions",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {

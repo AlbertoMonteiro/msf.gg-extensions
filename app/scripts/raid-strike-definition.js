@@ -18,13 +18,39 @@ export function doRaidStrikeDefinition() {
         const currentElement = $(element.target);
         if (currentElement.is(".snackbar button.is-dark"))
             goToNextColor();
-        if (currentElement.is(".raid-strike-save"))
+        else if (currentElement.is(".raid-strike-save"))
             saveRaidStrike();
-        if (currentElement.is(".raid-info.primary.content button"))
+        else if (currentElement.is(".raid-strike-restore"))
+            restoreRaidStrike();
+        else if (currentElement.is(".raid-info.primary.content button"))
             restartRaidDefinition();
-        if (currentElement.parents("div.raid-wrapper div.node").length > 0)
+        else if (currentElement.parents("div.raid-wrapper div.node").length > 0)
             registerColorPath();
     });
+
+    function restoreRaidStrike() {
+        var raid = $(".menu-list input[type=radio][name=event-select]:checked").closest("label").text();
+        let strikeJson = window.localStorage.getItem(`${raid}_raid-strike`.trim());
+
+        try {
+            if (strikeJson === null)
+                throw undefined;
+
+            let strike = JSON.parse(strikeJson);
+            let index = 0;
+            let columns = $(".raid-strikes tbody td");
+
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 3; j++) {
+                    const element = strike[j][i];
+                    columns.eq(index).text(element);
+                    index++;
+                }
+            }
+        } catch (error) {
+            alert("There is no STRIKE definition for this raid.");
+        }
+    }
 
     function saveRaidStrike() {
         const strikes = [
@@ -39,6 +65,7 @@ export function doRaidStrikeDefinition() {
         var raid = $(".menu-list input[type=radio][name=event-select]:checked").closest("label").text();
 
         window.localStorage.setItem(`${raid}_raid-strike`.trim(), JSON.stringify(strikes));
+        alert('Raid strike saved.');
     }
 
     function registerColorPath() {
@@ -51,7 +78,7 @@ export function doRaidStrikeDefinition() {
         currentRaidColorIndex++;
         currentColorAdded = false;
         if (currentRaidColorIndex == 8) {
-            showRaidListTable(selectedColors);
+            setTimeout(() => showRaidListTable(selectedColors), 0);
         }
     }
 
@@ -70,4 +97,11 @@ function showRaidListTable(selectedColors) {
     var newElement = $(finalHtml);
 
     $(".raids.container .columns.is-desktop").append(newElement);
+
+    setTimeout(() => {
+        $(".raid-strikes tbody td").focusin((ele) => {
+            if ($(ele.target).text() === "edit here")
+                $(ele.target).text("");
+        });
+    }, 0);
 }
